@@ -1,0 +1,48 @@
+   html {
+      background-color:#333333;
+    }
+
+    header {
+       width: 100%;
+       margin: 10px;
+
+     }
+  header span {
+    margin-left: 5px;
+    vertical-align: center;
+    text-align: center;
+    color:white;
+    font-family: "Lucida Grande", sans-serif;
+    font-size: 20px;
+    padding:3px;
+    border:2px solid white ;
+    }
+
+   #map-canvas {
+        height: 800px;
+        width: 800px;
+        margin: 0px;
+        padding: 0px;
+        float: left;
+      }
+
+   #map-canvas.hidden {
+      visibility: hidden;
+    }
+  #averagemood span {
+    vertical-align: center;
+    color:white;
+    font-family: "Lucida Grande", sans-serif;
+    padding: 10px;
+    font-size: 20px;
+  }
+
+   #averagemood.hidden {
+    visibility: hidden;
+   }
+  td {
+    border-left:5px solid #333333;
+  }
+ td.circle {
+    border: 5px solid red;
+ }
