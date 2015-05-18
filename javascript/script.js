@@ -68,7 +68,7 @@
   
           var renderCity = function(city) {
            //make an the adjectives and emotions into objects and arrays
-          var adjectives = [" super", " very", " really", " so", " feeling", " m super", " m very", " m really", " m so", " m feeling" ]
+          var adjectives = [" super", " very", " really", " so", " feeling", " "]
           var emotions ={"happy": ["happy ", "excited ", "elated ", "joyful ","trilled ", "stoked " ],
                          "sad": ["unhappy ", "sad ", "depressed ", "upset ", "ashamed ", "miserable "],
                         "angry": ["angry ","pissed ", "annoyed ", "furious ", "outraged ", "mad "] 
@@ -127,7 +127,7 @@
                           happylong.push(response.statuses[k].coordinates.coordinates[0])
                           happylat.push(response.statuses[k].coordinates.coordinates[1])
                           happylink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          happyuser.push(response.statuses[k].created_at)
+                          happyuser.push(response.statuses[k].user.name)
                         }
                   }  
                 } 
@@ -142,7 +142,7 @@
                           sadlong.push(response.statuses[k].coordinates.coordinates[0])
                           sadlat.push(response.statuses[k].coordinates.coordinates[1])
                           sadlink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          saduser.push(response.statuses[k].created_at)
+                          saduser.push(response.statuses[k].user.name)
                         }
                         }
                         }  
@@ -158,7 +158,7 @@
                           angrylong.push(response.statuses[k].coordinates.coordinates[0])
                           angrylat.push(response.statuses[k].coordinates.coordinates[1])
                           angrylink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          angryuser.push(response.statuses[k].created_at)
+                          angryuser.push(response.statuses[k].user.name)
                         }
                         }  
                         }   
