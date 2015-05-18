@@ -68,8 +68,7 @@
   
           var renderCity = function(city) {
            //make an the adjectives and emotions into objects and arrays
-          var adjectives = ["'m super", "'m very", "'m really", "'m so", "'m feeling" , 
-                            " am super", " am very", " am really", " am so", " am feeling"]
+          var adjectives = [" super", " very", " really", " so", " feeling" ]
           var emotions ={"happy": ["happy ", "excited ", "elated ", "joyful ","trilled ", "stoked " ],
                          "sad": ["unhappy ", "sad ", "depressed ", "upset ", "ashamed ", "miserable "],
                         "angry": ["angry ","pissed ", "annoyed ", "furious ", "outraged ", "mad "] 
