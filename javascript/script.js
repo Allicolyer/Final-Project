@@ -158,7 +158,7 @@
                           angrylong.push(response.statuses[k].coordinates.coordinates[0])
                           angrylat.push(response.statuses[k].coordinates.coordinates[1])
                           angrylink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          angryuser.push(response.statuses[k].created_at
+                          angryuser.push(response.statuses[k].created_at)
                         }
                         }  
                         }   
