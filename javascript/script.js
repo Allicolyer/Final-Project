@@ -173,9 +173,6 @@
         $("#song").html("");  
         moodarray=[happyarray.length, sadarray.length,angryarray.length]
         console.log(moodarray)
-        console.log(happyuser)
-        console.log(saduser)
-        console.log(angryuser)
 
         //weights the sad and angry tweets more heavily because it takes more for someone to tweet about these thigns. All this just makes things more interesting so why not.
         var rating = eval(moodarray[0]/(3*moodarray[1]+ 2.5*moodarray[2]));
