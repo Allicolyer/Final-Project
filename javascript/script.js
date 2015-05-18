@@ -127,7 +127,7 @@
                           happylong.push(response.statuses[k].coordinates.coordinates[0])
                           happylat.push(response.statuses[k].coordinates.coordinates[1])
                           happylink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          happyuser.push(response.statuses[k].user.name)
+                          happyuser.push(response.statuses[k].created_at)
                         }
                   }  
                 } 
@@ -142,7 +142,7 @@
                           sadlong.push(response.statuses[k].coordinates.coordinates[0])
                           sadlat.push(response.statuses[k].coordinates.coordinates[1])
                           sadlink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          saduser.push(response.statuses[k].user.name)
+                          saduser.push(response.statuses[k].created_at)
                         }
                         }
                         }  
@@ -158,7 +158,7 @@
                           angrylong.push(response.statuses[k].coordinates.coordinates[0])
                           angrylat.push(response.statuses[k].coordinates.coordinates[1])
                           angrylink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          angryuser.push(response.statuses[k].user.name)
+                          angryuser.push(response.statuses[k].created_at
                         }
                         }  
                         }   
@@ -173,6 +173,9 @@
         $("#song").html("");  
         moodarray=[happyarray.length, sadarray.length,angryarray.length]
         console.log(moodarray)
+        console.log(happyuser)
+        console.log(saduser)
+        console.log(angryuser)
 
         //weights the sad and angry tweets more heavily because it takes more for someone to tweet about these thigns. All this just makes things more interesting so why not.
         var rating = eval(moodarray[0]/(3*moodarray[1]+ 2.5*moodarray[2]));
