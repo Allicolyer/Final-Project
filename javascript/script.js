@@ -30,8 +30,8 @@
           "Honolulu": {
             "latitude":21.3000,
             "longitude": -157.8167, 
-            "miles": 10,
-            "zoom": 11
+            "miles": 8,
+            "zoom": 12
           },
            "Los Angeles":{
             "latitude":34.0500,
@@ -50,7 +50,13 @@
             "longitude": -122.6819,
             "miles": 10,
             "zoom": 11
-          },    
+          },          
+           "Vancouver": {
+            "latitude":49.2827,
+            "longitude": -123.1207, 
+            "miles": 10,
+            "zoom": 11
+          },
            "London": {
             "latitude":51.5072,
             "longitude": -0.1275, 
@@ -58,18 +64,15 @@
             "zoom": 11
           }
           }
-
-         
-
       
   
           var renderCity = function(city) {
            //make an the adjectives and emotions into objects and arrays
           var adjectives = ["m super", "m very", "m really", "m so", "'m feeling" , 
                             " am super", " am very", " am really", " am so", " am feeling"]
-          var emotions ={"happy": ["happy", "excited", "elated", "joyful","trilled", "stoked" ],
-                         "sad": ["unhappy", "sad", "depressed", "upset", "ashamed", "miserable"],
-                        "angry": ["angry","pissed", "annoyed", "furious", "outraged", "mad"] 
+          var emotions ={"happy": ["happy ", "excited ", "elated ", "joyful ","trilled ", "stoked " ],
+                         "sad": ["unhappy ", "sad ", "depressed ", "upset ", "ashamed ", "miserable "],
+                        "angry": ["angry ","pissed ", "annoyed ", "furious ", "outraged ", "mad "] 
                         }
           $("#averagemood").addClass("hidden")
           $("#map-canvas").addClass("hidden")
