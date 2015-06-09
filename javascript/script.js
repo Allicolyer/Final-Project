@@ -30,8 +30,8 @@
           "Honolulu": {
             "latitude":21.3000,
             "longitude": -157.8167, 
-            "miles": 8,
-            "zoom": 12
+            "miles": 6,
+            "zoom": 13
           },
            "Los Angeles":{
             "latitude":34.0500,
@@ -50,7 +50,13 @@
             "longitude": -122.6819,
             "miles": 10,
             "zoom": 11
-          },          
+          }, 
+        "Denver": {
+            "latitude":39.7392,
+            "longitude": -104.9903,
+            "miles": 8,
+            "zoom": 12
+        },         
            "Vancouver": {
             "latitude":49.2827,
             "longitude": -123.1207, 
