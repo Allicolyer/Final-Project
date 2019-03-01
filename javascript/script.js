@@ -1,316 +1,248 @@
+$(document).ready(function(){
 
-        $(document).ready(function(){
+  const cities = {
+    "New York":{
+      "latitude":40.7127,
+      "longitude": -74.0059,
+      "miles": 12,
+      "zoom": 11
+    },
+    "Philadelphia": {
+      "latitude":39.9500,
+      "longitude": -75.1667,
+      "miles": 8,
+      "zoom": 12
+    },
+    "Montreal": {
+      "latitude":45.5017,
+      "longitude": -73.5673,
+      "miles": 10,
+      "zoom": 11
+    },
+    "Miami": {
+      "latitude":25.7753,
+      "longitude": -80.2089,
+      "miles": 10,
+      "zoom": 11
+    },
+    "Honolulu": {
+      "latitude":21.3000,
+      "longitude": -157.8167,
+      "miles": 6,
+      "zoom": 13
+    },
+    "Los Angeles":{
+      "latitude":34.0500,
+      "longitude": -118.2500,
+      "miles": 18,
+      "zoom": 11
+    },
+    "San Francisco": {
+      "latitude":37.7833,
+      "longitude": -122.4167,
+      "miles": 10,
+      "zoom": 11
+    },
+    "Portland": {
+      "latitude":45.5200,
+      "longitude": -122.6819,
+      "miles": 10,
+      "zoom": 11
+    },
+    "Denver": {
+      "latitude":39.7392,
+      "longitude": -104.9903,
+      "miles": 8,
+      "zoom": 12
+    },
+    "Vancouver": {
+      "latitude":49.2827,
+      "longitude": -123.1207,
+      "miles": 10,
+      "zoom": 11
+    },
+    "London": {
+      "latitude":51.5072,
+      "longitude": -0.1275,
+      "miles": 10,
+      "zoom": 11
+    }
+  }
 
-          console.log("hi")
-         var cities = {
-          "New York":{
-            "latitude":40.7127,
-            "longitude": -74.0059,
-            "miles": 12,
-            "zoom": 11
-           },
-          "Philadelphia": {
-            "latitude":39.9500,
-            "longitude": -75.1667, 
-            "miles": 8,
-            "zoom": 12
-          },
-          "Montreal": {
-            "latitude":45.5017,
-            "longitude": -73.5673, 
-            "miles": 10,
-            "zoom": 11
-          },
-          "Miami": {
-            "latitude":25.7753,
-            "longitude": -80.2089, 
-            "miles": 10,
-            "zoom": 11
-          },
-          "Honolulu": {
-            "latitude":21.3000,
-            "longitude": -157.8167, 
-            "miles": 6,
-            "zoom": 13
-          },
-           "Los Angeles":{
-            "latitude":34.0500,
-            "longitude": -118.2500, 
-            "miles": 18,
-            "zoom": 10
-          },
-          "San Francisco": {
-            "latitude":37.7833,
-            "longitude": -122.4167, 
-            "miles": 10,
-            "zoom": 11
-          },
-        "Portland": {
-            "latitude":45.5200,
-            "longitude": -122.6819,
-            "miles": 10,
-            "zoom": 11
-          }, 
-        "Denver": {
-            "latitude":39.7392,
-            "longitude": -104.9903,
-            "miles": 8,
-            "zoom": 12
-        },         
-           "Vancouver": {
-            "latitude":49.2827,
-            "longitude": -123.1207, 
-            "miles": 10,
-            "zoom": 11
-          },
-           "London": {
-            "latitude":51.5072,
-            "longitude": -0.1275, 
-            "miles": 10,
-            "zoom": 11
-          }
-          }
-      
-  
-          var renderCity = function(city) {
-           //make an the adjectives and emotions into objects and arrays
-          var adjectives = [" super", " very", " really", " so", " feeling", " "]
-          var emotions ={"happy": ["happy ", "excited ", "elated ", "joyful ","trilled ", "stoked " ],
-                         "sad": ["unhappy ", "sad ", "depressed ", "upset ", "ashamed ", "miserable "],
-                        "angry": ["angry ","pissed ", "annoyed ", "furious ", "outraged ", "mad "] 
-                        }
-          $("#averagemood").addClass("hidden")
-          $("#map-canvas").addClass("hidden")
-          $(".moods td").removeClass("circle"); 
-          $("#song").html("");  
-         
-          //makes it easier to just make these things variables to refer to them
-          var url = "http://cooper-union-search-proxy.herokuapp.com/twitter/search/I"
-          var url2 = "?geocode="+cities[city].latitude+"," + cities[city].longitude +","+ cities[city].miles + "mi&count=100"   
-         
-          //arrays for counting
-          var sadarray =[]
-          var angryarray =[]
-          var happyarray = []
+  //adjectives that will be used as emotions
+  const adjectives = ["super", "very", "really", "so", "feeling", ""]
+  const words ={"happy": ["happy ", "excited ", "elated ", "joyful ","trilled ", "stoked " ],
+                "sad": ["unhappy ", "sad ", "depressed ", "upset ", "ashamed ", "miserable "],
+                "angry": ["angry ","pissed ", "annoyed ", "furious ", "outraged ", "mad "]
+              }
 
-          //arrays for longitude and latitudes
-          var happylong = []
-          var happylat = []
-          var happylink =[]
-          var happyuser=[]
+  //function to create URL that will be used in the call to the twitter API
+  function url(adjective, latitude, longitude, miles) {
+    return (`http://cooper-union-search-proxy.herokuapp.com/twitter/search/I'm%20${adjective}?geocode=${latitude},${longitude},${miles}mi&count=1000`)
+  };
 
-          var sadlong = []
-          var sadlat = []
-          var sadlink= []
-          var saduser=[]
+  //searches all statuses that have the adjective and the emotion word
+  function searchWords(word,array,response,city) {
+    for(var k = 0; k<response.statuses.length; k++) {
+      var str=response.statuses[k].text
+      var n =str.search(word)
 
-          var angrylong = []
-          var angrylat = []
-          var angrylink=[]
-          var angryuser =[]
+      //This creates an object that will be used to mark the map
+      if (n != -1 && n != "undefined") {
+        var obj = {}
 
-        //cycles through all the adjectives and looks for them on twitter
-         for (var j=0; j<adjectives.length; j++) {
-               var adjective = adjectives[j];
-        //has the function run with the value at the bottom
-            (function(adjective){
+        obj.link = `https://twitter.com/ ${response.statuses[k].user.name}/status/${response.statuses[k].id_str}`,
+        obj.user =  response.statuses[k].user.name
 
-            $.getJSON(url + adjective + url2, function(response){ 
-              console.log(url+adjective +url2)
-              console.log(response)
-              //cycles through the emotion words associated with happy
-               for (var i=0; i<emotions.happy.length; i++) { 
-                  var emotion=emotions.happy[i]
-                  //searches all statuses that have the adjective and the emotion word
-                  for(var k = 0; k<response.statuses.length; k++) {
-                     var str=response.statuses[k].text
-                      var n =str.search(emotion)
-                      //if the emotion word is in there it pushes the word "avocado" onto an array
-                      //I thought it was visually misleading to count tweets that can't be plotted
-                      //if the emotion word is in there and if the tweet has a location it will push the coordinates onto a latitude and longitude array associated
-                        if ((n != -1 && n != "undefined") && (response.statuses[k].coordinates != "null" && response.statuses[k].coordinates != null)){
-                          happyarray.push("avocado")
-                          happylong.push(response.statuses[k].coordinates.coordinates[0])
-                          happylat.push(response.statuses[k].coordinates.coordinates[1])
-                          happylink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          happyuser.push(response.statuses[k].user.name)
-                        }
-                  }  
-                } 
-              //cycles through the emotion words associated with happy
-                for (var i=0; i<emotions.sad.length; i++) { 
-                  var emotion=emotions.sad[i]
-                     for(var k = 0; k<response.statuses.length; k++) {
-                     var str=response.statuses[k].text
-                      var n =str.search(emotion)
-                         if ((n != -1 && n != "undefined") && (response.statuses[k].coordinates != "null" && response.statuses[k].coordinates != null)){
-                          sadarray.push("avocado")
-                          sadlong.push(response.statuses[k].coordinates.coordinates[0])
-                          sadlat.push(response.statuses[k].coordinates.coordinates[1])
-                          sadlink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          saduser.push(response.statuses[k].user.name)
-                        }
-                        }
-                        }  
-                         
-              //cycles through the emotion words associated with angry
-                 for (var i=0; i<emotions.angry.length; i++) { 
-                 var  emotion=emotions.angry[i]   
-                     for(var k = 0; k<response.statuses.length; k++) {
-                     var str=response.statuses[k].text   
-                      var n =str.search(emotion)
-                        if ((n != -1 && n != "undefined") && (response.statuses[k].coordinates != "null" && response.statuses[k].coordinates != null)){
-                          angryarray.push("avocado")
-                          angrylong.push(response.statuses[k].coordinates.coordinates[0])
-                          angrylat.push(response.statuses[k].coordinates.coordinates[1])
-                          angrylink.push("https://twitter.com/" + response.statuses[k].user.name + "/status/" + response.statuses[k].id_str)
-                          angryuser.push(response.statuses[k].user.name)
-                        }
-                        }  
-                        }   
-                        });  
-                  })(adjective)
-                        }
-        //give JSON time to work, change the last number if the internet is really slow somewhere
-        var timeout=setTimeout(function () {everythingelse()}, 3000);
-         function everythingelse() {
+      //if the coordiantes are null, pick a random spot close to the city center
+        if (!response.statuses[k].coordinates){
+          obj.long = ((cities[city].longitude) + .1*(Math.random()-.5))
+          obj.lat = ((cities[city].latitude) + .1*(Math.random()-.5))
+        }
+        else {
+          obj.long = response.statuses[k].coordinates.coordinates[0]
+          obj.lat = response.statuses[k].coordinates.coordinates[1]
+        }
+      array.push(obj);
+      }
+    }
+  };
+
+
+  var renderCity = function(city) {
+    // hide the map, average mood rating as the function runs.
+    $("#averagemood").addClass("hidden")
+    $("#map-canvas").addClass("hidden")
+    $(".moods td").removeClass("circle");
+    $("#song").html("");
+
+    //arrays for user information to make map markers
+    var happy = []
+    var sad =[]
+    var angry = []
+
+    //cycles through all the adjectives and makes a call to the Twitter API using them with the
+    //lattitude and longitutde of the city that the user choose
+
+    adjectives.forEach(adjective => {
+
+      $.getJSON(
+        url(adjective, cities[city].latitude, cities[city].longitude, cities[city].miles),
+        function(response){
+          console.log(url(adjective, cities[city].latitude, cities[city].longitude, cities[city].miles));
+          console.log(response)
+
+          //cycles through the words associated with each emotion
+          words.happy.forEach(word => {
+            searchWords(word, happy, response, city)
+          });
+
+          words.sad.forEach(word => {
+            searchWords(word, sad, response, city)
+          })
+
+          words.angry.forEach(word => {
+            searchWords(word, angry, response, city)
+          })
+      });
+    });
+
+    //give JSON time to work, change the last number if the internet is really slow somewhere
+    var timeout = setTimeout(function () {renderMap()}, 3000);
+
+      function renderMap() {
         $("#averagemood").removeClass("hidden")
         $("#map-canvas").removeClass("hidden")
-        $("#song").html("");  
-        moodarray=[happyarray.length, sadarray.length,angryarray.length]
+        $("#song").html("");
+
+        moodarray=[happy.length, sad.length, angry.length]
         console.log(moodarray)
 
-        //weights the sad and angry tweets more heavily because it takes more for someone to tweet about these thigns. All this just makes things more interesting so why not.
+        //weights the sad and angry tweets more heavily because it takes more for someone to
+        //tweet about these things. All this just makes things more interesting so why not.
         var rating = eval(moodarray[0]/(3*moodarray[1]+ 2.5*moodarray[2]));
         console.log(rating)
 
-        var html1 = "<audio controls autoplay> <source src = songs/"
-        var html2 = ".mp3 type='audio/mp3' reload='none'> Your browser does not support the audio element.</audio> <br />"
+        function showRating(type, div){
+          var html = `<audio controls autoplay> <source src = songs/${type}.mp3 type='audio/mp3'
+                      reload='none'> Your browser does not support the audio element.</audio>
+                      <br />`
+          $('#song').append(html)
+          $(`#${div}`).addClass("circle")
+        }
 
         //assess rating three times as many happy people as sad people = superhappy :)
         if (rating >=  3){
-          var type = "Happy"   
-          var html = html1 + type + html2  
-           $('#song').append(html) 
-          $("#superhappy").addClass("circle")
+          showRating("Happy","superhappy")
         }
         else if (rating >= 2) {
-          var type = "Happy"   
-          var html = html1 + type + html2  
-           $('#song').append(html) 
-          $("#happy").addClass("circle")
+          showRating("Happy","happy")
         }
         else if (rating >=1) {
-          var type = "Happy"   
-          var html = html1 + type + html2  
-           $('#song').append(html) 
-          $("#neutralhappy").addClass("circle")
+          showRating("Happy","neutralhappy")
         }
         // three times as many sad people as happy people = supersad  :(
         else if (rating <=0.333) {
-          var type = "Sad"   
-          var html = html1 + type + html2  
-           $('#song').append(html) 
-          $("#supersad").addClass("circle")
+          showRating("Sad","supersad")
         }
         else if (rating <=0.5) {
-          var type = "Sad"   
-          var html = html1 + type + html2  
-           $('#song').append(html) 
-          $("#sad").addClass("circle")
+          showRating("Sad","sad")
         }
         else if (rating <1) {
-          var type = "Sad"   
-          var html = html1 + type + html2  
-           $('#song').append(html) 
-          $("#neutralsad").addClass("circle")
+          showRating("Sad","neutralsad")
         }
 
+        var mapOptions = {
+            zoom: cities[city].zoom,
+            center: new google.maps.LatLng(cities[city].latitude,cities[city].longitude)
+        };
 
-
-         var mapOptions = {
-             zoom: cities[city].zoom, 
-              center: new google.maps.LatLng(cities[city].latitude,cities[city].longitude) 
-                 };
         var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-        var myLatlng = new google.maps.LatLng(cities[city].latitude,cities[city].longitude);
         var positions = []
-
-        for (var i=0; i<happylat.length; i++) {
-          positionobject = {
-            'title': happyuser[i],
-            'map': new google.maps.LatLng(happylat[i], happylong[i]),
-            'link':happylink[i],
-            'icon': "pictures/happyflag.png"
-          }
-          positions.push(positionobject)
-        };
-        for (var i=0; i<sadlat.length; i++) {
-          positionobject = {
-            'title': saduser[i],
-            'map': new google.maps.LatLng(sadlat[i], sadlong[i]),
-            'link':sadlink[i],
-            'icon': "pictures/sadflag.png"
-          }
-          positions.push(positionobject)
-        };
-        for (var i=0; i<angrylat.length; i++) {
-          positionobject = {
-            'title': angryuser[i],
-            'map': new google.maps.LatLng(angrylat[i], angrylong[i]),
-            'link':angrylink[i],
-            'icon': "pictures/angryflag.png"
-          }
-          positions.push(positionobject)
-        };
-
-
         var markers = [];
         var infoWindows = [];
         var popUps = [];
-        
 
-      for (var i=0; i<happylat.length; i++) { 
-        var happyicon = "pictures/happyflag.png"
-         var LatLng = new google.maps.LatLng(happylat[i], happylong[i]);
-         var markerOptions = new google.maps.Marker({
-               position: LatLng,
-               map: map,
-               title: happyuser[i],
-              icon: happyicon
-           });
-         markers.push(markerOptions);
-       }
-
-    for (var i=0; i<sadlat.length; i++) {
-        var sadicon ="pictures/sadflag.png"
-         var LatLng = new google.maps.LatLng(sadlat[i], sadlong[i]);
-         var markerOptions = new google.maps.Marker({
-               position: LatLng,
-               map: map,
-               title:saduser[i],
-                icon: sadicon
-           });
-       
-        markers.push(markerOptions);
-  
+        function makePositionObject(object,icon){
+          positionobject = {
+            'title': object.user,
+            'map': new google.maps.LatLng(object.lat, object.long),
+            'link':object.link,
+            'icon': icon
           }
+          positions.push(positionobject)
+        }
 
-      for (var i=0; i<angrylat.length; i++) {
-        var madicon = "pictures/angryflag.png"
-         var LatLng = new google.maps.LatLng(angrylat[i], angrylong[i]);
-         var markerOptions = new google.maps.Marker({
-               position: LatLng,
-               map: map,
-               title:angryuser[i],
-              icon: madicon
+        function makeMarkers(object, icon){
+          var LatLng = new google.maps.LatLng(object.lat, object.long);
+          var markerOptions = new google.maps.Marker({
+            position: LatLng,
+            map: map,
+            title: object.user,
+            icon: icon
            });
-         markers.push(markerOptions);
-          }
+          markers.push(markerOptions);
+        }
 
+        happy.forEach(object => {
+          var icon = "pictures/happyflag.png"
+          makePositionObject(object, icon)
+          makeMarkers(object, icon)
+        });
+
+        sad.forEach(object => {
+          var icon = "pictures/sadflag.png"
+          makePositionObject(object, icon)
+          makeMarkers(object, icon)
+        });
+
+        angry.forEach(object => {
+          var icon = "pictures/angryflag.png"
+          makePositionObject(object, icon)
+          makeMarkers(object, icon)
+        });
 
         for (i in markers) {
-
           //create a template with two placeholder to replace
           var popUpTemplate = '<div class="content"><a target=_blank href="{{link}}">{{content}}</a></div>';
 
@@ -321,6 +253,7 @@
           popUps[i] = popUps[i].replace('{{link}}', positions[i].link);
 
           //create a new info window
+
           infoWindows[i] = new google.maps.InfoWindow({
             //the contents is the string-replaced template we created within this loop
             content:popUps[i]
@@ -329,31 +262,28 @@
           //when a marker is clicked on
           google.maps.event.addListener(markers[i], 'click', function(innerKey) {
             return function() {
-                //comment out the for loop persist each info window
-                for (j in markers) {
-                  infoWindows[j].close(map, markers[j]);
-                }
-
-                //open the infoWindow related to the marker clicked on
-                infoWindows[innerKey].open(map, markers[innerKey]);
+              //comment out the for loop persist each info window
+              for (j in markers) {
+               infoWindows[j].close(map, markers[j]);
+              }
+              //open the infoWindow related to the marker clicked on
+              infoWindows[innerKey].open(map, markers[innerKey]);
             }
           }(i));
-        } 
-      } 
-      } 
-    $.each(cities, function(cityName, cityData){
+        }
+      }
+    }
 
-        var button ="<span>" + cityName+ "</span>"
-      $(button).appendTo("header").click(function(){  
-        var currentCity = $(this).text();
-        console.log(currentCity)
-        renderCity(currentCity);
-        
-      })
+    Object.keys(cities).forEach(cityName => {
+      $("header").append(`<span class="city">${cityName}</span>`)
+    });
 
-    })
+    $(".city").click(function() {
+      var currentCity = $(this).text();
+      console.log(currentCity)
+      renderCity(currentCity);
+    });
 
 })//end document ready
 
 
-     
